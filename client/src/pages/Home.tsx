@@ -1,4 +1,3 @@
-import ProductCard from "@/components/ProductCard";
 
 
 export default function Home() {
@@ -7,7 +6,7 @@ export default function Home() {
         padding: "20px",
         margin: "20px",
     }}>
-        <ProductCard/>
+      Home Page
     </div>
   )
 }

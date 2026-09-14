@@ -1,7 +1,8 @@
 import { Button, Card, Image, Text } from "@chakra-ui/react"
 import {Link} from "react-router-dom"
+import type { IProduct } from "@/interfaces/IProduct";
 
-export default function ProductCard() {
+export default function ProductCard(product:IProduct) {
   return (
     <Card.Root 
         overflow="hidden" pt='6'
@@ -31,7 +32,8 @@ export default function ProductCard() {
             textAlign="center"
             borderRadius='sm'
         >
-            Living room Sofa</Card.Title>
+         {product?.title || "Product Name"}  
+        </Card.Title>
         <Card.Description 
             fontSize="sm"
             textAlign="center"
@@ -40,7 +42,7 @@ export default function ProductCard() {
           spaces.
         </Card.Description>
         <Text textStyle="2xl" fontWeight="medium" letterSpacing="tight" mt="2" textAlign="center">
-          $450
+          {`${product?.price}$` || 0}
         </Text>
       </Card.Body>
       <Card.Footer gap="2">
