@@ -1,23 +1,39 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Grid } from "@chakra-ui/react";
+import { Grid, Spinner, Text, Center } from "@chakra-ui/react";
 import ProductCard from "@/components/ProductCard";
 import type { IProduct } from "@/interfaces/IProduct";
+import { getProducts } from "@/api/products/products";
+import { useQuery } from "@tanstack/react-query";
+import SkeletonComponent from "@/components/Skeleton";
+import type { TbRuler2 } from "react-icons/tb";
 
 export default function Products() {
-  const [products, setProducts] = useState<IProduct[]>([]);
+  const { data: products, isLoading, isError, error } = useQuery<IProduct[]>({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:1337/api/products")
-      .then((response) => {
-        console.log("Data fetched:", response.data.data);
-        setProducts(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+  if (isLoading) {
+    return (
+      <Grid 
+        gap={6}
+        p={6}
+        m={6} templateColumns="repeat(auto-fill, minmax(250px, 1fr))" 
+        margin={30}
+      >
+        {
+          Array.from({length:20} , (_,indx)=><SkeletonComponent key={indx}/>)
+        }
+      </Grid>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Center h="50vh">
+        <Text color="red.400">Error :{(error as Error).message}</Text>
+      </Center>
+    );
+  }
 
   return (
     <Grid
@@ -26,8 +42,8 @@ export default function Products() {
       p={6}
       m={6}
     >
-      {products.map((product: IProduct) => (
-        <ProductCard key={product.id} {...product} />
+      {products?.map((product: IProduct) => (
+        <ProductCard key={product.id} product={product} />
       ))}
     </Grid>
   );

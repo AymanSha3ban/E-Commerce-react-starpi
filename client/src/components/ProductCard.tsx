@@ -2,7 +2,7 @@ import { Button, Card, Image, Text } from "@chakra-ui/react"
 import {Link} from "react-router-dom"
 import type { IProduct } from "@/interfaces/IProduct";
 
-export default function ProductCard(product:IProduct) {
+export default function ProductCard({product}:{product:IProduct}) {
   return (
     <Card.Root 
         overflow="hidden" pt='6'
