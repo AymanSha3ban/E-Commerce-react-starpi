@@ -1,5 +1,5 @@
 import { getProductsByID } from "@/api/products/products";
-import { Box, Button, ButtonGroup, Card, Center, HStack, Image,Text } from "@chakra-ui/react";
+import { Box, Button, Card, Center, HStack, Image,Text } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductDetailsSkeleton } from "./Skeletons";
