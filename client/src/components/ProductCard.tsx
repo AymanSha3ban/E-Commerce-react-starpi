@@ -20,7 +20,9 @@ export default function ProductCard({product}:{product:IProduct}) {
         }}
     >
       <Image
-        src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+        src={(product?.thumbnail?.url)?
+          `${import.meta.env.VITE_SERVER_URL}${product.thumbnail.url}`
+          :"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"}
         alt="Green double couch with wooden legs"
         boxSize="200px"
         mx="auto"
@@ -58,7 +60,7 @@ export default function ProductCard({product}:{product:IProduct}) {
                 color: "white",
             }}
         >
-           <Link to="/product/1">View Details</Link>
+           <Link to={`/products/${product.documentId}`}>View Details</Link>
         </Button>
       </Card.Footer>
     </Card.Root>

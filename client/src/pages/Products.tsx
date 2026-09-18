@@ -1,10 +1,10 @@
-import { Grid, Spinner, Text, Center } from "@chakra-ui/react";
+import { Grid,Text, Center } from "@chakra-ui/react";
 import ProductCard from "@/components/ProductCard";
 import type { IProduct } from "@/interfaces/IProduct";
 import { getProducts } from "@/api/products/products";
 import { useQuery } from "@tanstack/react-query";
-import SkeletonComponent from "@/components/Skeleton";
-import type { TbRuler2 } from "react-icons/tb";
+import {ProductsSkeleton} from "@/components/Skeletons";
+
 
 export default function Products() {
   const { data: products, isLoading, isError, error } = useQuery<IProduct[]>({
@@ -21,7 +21,7 @@ export default function Products() {
         margin={30}
       >
         {
-          Array.from({length:20} , (_,indx)=><SkeletonComponent key={indx}/>)
+          Array.from({length:20} , (_,indx)=><ProductsSkeleton key={indx}/>)
         }
       </Grid>
     );
@@ -43,7 +43,7 @@ export default function Products() {
       m={6}
     >
       {products?.map((product: IProduct) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard key={product.documentId} product={product} />
       ))}
     </Grid>
   );

@@ -1,8 +1,11 @@
-
 export interface IProduct {
   id: number;
+  documentId:string;
   title: string;
   description: string;
   price: number;
-  imageUrl: string;
+  stock: number;
+  thumbnail: {
+    url: string;
+  };
 }
