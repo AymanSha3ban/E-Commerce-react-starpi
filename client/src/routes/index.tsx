@@ -1,17 +1,19 @@
 import Home from "../pages/Home";
 import App from "../App";
 import { createBrowserRouter } from "react-router-dom";
-import About from "@/pages/About";
+import Team from "@/pages/Team";
 import Products from "@/pages/Products";
 import ProductDetails from "@/components/ProductDetails";
+import Dashboard from "@/pages/Dashboard";
 
 export const router = createBrowserRouter([
     {path: "/", element: <App/>,
         children: [
             {index:true , element: <Home/>},
-            {path: "/about", element: <About/>},
+            {path: "/team", element: <Team/>},
             {path: "/products", element: <Products/>},
             {path: "/products/:id", element: <ProductDetails />},
+            {path: "/dashboard", element: <Dashboard/>},
         ]
     },
 ]);

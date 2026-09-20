@@ -33,3 +33,14 @@ export function ProductDetailsSkeleton() {
     </Stack>
   )
 }
+export function CategoriesSkeleton() {
+  return (
+    <Stack gap="6" maxW="xs">
+      <HStack width="full">
+        <SkeletonCircle size="10" />
+        <SkeletonText noOfLines={2} />
+      </HStack>
+      <Skeleton height="200px" />
+    </Stack>
+  )
+}
