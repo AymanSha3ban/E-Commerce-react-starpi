@@ -3,6 +3,7 @@ import {
   LuSun,
   LuMoon,
   LuMenu,
+  LuShoppingCart,
 } from "react-icons/lu";
 import { useState } from "react";
 import {
@@ -15,6 +16,7 @@ import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { useCartState } from "@/Store/CartStore";
 
 export default function Navbar() {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -22,6 +24,9 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+
+  const orders = useCartState((state) => state.orders);
+  const totalItems = orders.reduce((acc, item) => acc + item.quantity, 0);
 
   const category = searchParams.get("category");
   const search = searchParams.get("search") || "";
@@ -69,7 +74,7 @@ export default function Navbar() {
         My Logo
       </RouterLink>
 
-      <div className="relative flex-1 max-w-[150px] sm:max-w-[220px] md:max-w-[320px] mx-0 md:mx-4">
+      <div className="relative flex-1 max-w-[220px] sm:max-w-[220px] md:max-w-[320px] mx-0 md:mx-4">
         <LuSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="text"
@@ -79,6 +84,23 @@ export default function Navbar() {
           onChange={handleSearch}
         />
       </div>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        asChild
+        className="relative rounded-full hover:bg-teal-500/10 hover:text-teal-500 transition-all"
+      >
+        <RouterLink to="/cart">
+          <LuShoppingCart className="h-5 w-5" />
+          {totalItems > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-teal-500 text-[11px] font-bold text-white shadow-sm ring-2 ring-background">
+              {totalItems > 99 ? "99+" : totalItems}
+            </span>
+          )}
+          <span className="sr-only">Shopping Cart</span>
+        </RouterLink>
+      </Button>
 
       <div className="hidden md:flex items-center gap-6">
         {links.map((link) => {

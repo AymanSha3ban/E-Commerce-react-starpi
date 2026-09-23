@@ -11,6 +11,7 @@ interface ICartState {
     increaseQuantity : (order: orderType)=>void,
     decreaseQuantity : (order: orderType)=>void,
     removeOrder : (order: orderType)=>void,
+    removeAllOrder : ()=>void,
 } 
 export const useCartState = create<ICartState>()(
     persist(
@@ -66,6 +67,11 @@ export const useCartState = create<ICartState>()(
                     return {
                         orders : filterdOrders 
                     }
+                })
+            },
+            removeAllOrder : ()=>{
+                set({
+                    orders : []
                 })
             },
         }),
