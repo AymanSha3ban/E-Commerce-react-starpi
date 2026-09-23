@@ -10,6 +10,7 @@ interface ICartState {
     addOrder: (order: orderType)=>void,
     increaseQuantity : (order: orderType)=>void,
     decreaseQuantity : (order: orderType)=>void,
+    removeOrder : (order: orderType)=>void,
 } 
 export const useCartState = create<ICartState>()(
     persist(
@@ -58,7 +59,15 @@ export const useCartState = create<ICartState>()(
                         orders : OrderMinusQuantity
                     } 
                 })
-            }
+            },
+            removeOrder : (order)=>{
+                set((state)=>{
+                    const filterdOrders = state.orders.filter((item)=>item.product.documentId !== order.product.documentId)
+                    return {
+                        orders : filterdOrders 
+                    }
+                })
+            },
         }),
         {
             name: "CartSate"

@@ -5,12 +5,16 @@ export default function CartPage() {
     const orders = useCartState(state=>state.orders);
     const increase = useCartState(state=>state.increaseQuantity);
     const decrease = useCartState(state=>state.decreaseQuantity);
+    const removeOrder = useCartState(state=>state.removeOrder);
 
     const increaseHandler =(order : orderType)=>{
         increase(order)
     }
     const decreaseHandler =(order : orderType)=>{
         decrease(order)
+    }
+    const removeOrderHandler =(order : orderType)=>{
+        removeOrder(order)
     }
   return (
     <div>
@@ -32,6 +36,12 @@ export default function CartPage() {
                                 className="size-[30px] bg-yellow-500 rounded-2xl"
                                 onClick={()=>increaseHandler(order)}
                             >+</button>
+
+                            <button 
+                                className="size-[30px] bg-red-500 rounded-2xl"
+                                onClick={()=>removeOrderHandler(order)}
+                            >Delete</button>
+                            
                         </div>
                     </div>
                 </div>
