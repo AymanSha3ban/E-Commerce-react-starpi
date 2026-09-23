@@ -1,6 +1,7 @@
-import { Button, Card, Image, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import type { IProduct } from "@/interfaces/IProduct";
+import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
 
 export default function ProductCard({ product }: { product: IProduct }) {
   const imageUrl = product?.thumbnail?.url
@@ -8,78 +9,37 @@ export default function ProductCard({ product }: { product: IProduct }) {
     : "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80";
 
   return (
-    <Card.Root
-      overflow="hidden"
-      pt="6"
-      bg="bg.panel"
-      border="1px solid"
-      borderColor="border.subtle"
-      borderRadius="xl"
-      boxShadow="sm"
-      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-      _hover={{
-        transform: "translateY(-6px)",
-        boxShadow: "lg",
-        borderColor: "teal.500",
-        bg: "bg.muted",
-      }}
-    >
-      <Image
+    <Card className="group overflow-hidden bg-card pt-6 border border-border rounded-xl shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg hover:border-teal-500 hover:bg-muted/50">
+      <img
         src={imageUrl}
         alt={product?.title || "Product image"}
-        boxSize="180px"
-        mx="auto"
-        rounded="full"
-        objectFit="cover"
-        transition="transform 0.3s ease"
-        _hover={{ transform: "scale(1.05)" }}
+        className="h-[180px] w-[180px] mx-auto rounded-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
 
-      <Card.Body gap="2" p="4">
-        <Card.Title
-          textAlign="center"
-          fontSize="lg"
-          fontWeight="semibold"
-          lineClamp={1}
-        >
+      <CardContent className="flex flex-col gap-2 p-4">
+        <CardTitle className="text-center text-lg font-semibold line-clamp-1">
           {product?.title || "Product Name"}
-        </Card.Title>
+        </CardTitle>
 
-        <Card.Description
-          fontSize="sm"
-          textAlign="center"
-          color="fg.muted"
-          lineClamp={2}
-        >
+        <CardDescription className="text-center text-sm text-muted-foreground line-clamp-2">
           {product?.description || "High quality product built for modern needs and everyday comfort."}
-        </Card.Description>
+        </CardDescription>
 
-        <Text
-          textStyle="xl"
-          fontWeight="bold"
-          mt="2"
-          textAlign="center"
-          color="teal.600"
-          _dark={{ color: "teal.300" }}
-        >
+        <div className="mt-2 text-center text-xl font-bold text-teal-600 dark:text-teal-400">
           ${product?.price ?? 0}
-        </Text>
-      </Card.Body>
+        </div>
+      </CardContent>
 
-      <Card.Footer p="4" pt="0">
+      <CardFooter className="p-4 pt-0">
         <Button
           asChild
-          colorPalette="teal"
-          variant="solid"
-          w="full"
-          borderRadius="md"
-          transition="all 0.2s ease"
+          className="w-full bg-teal-600 text-white hover:bg-teal-700 transition-colors"
         >
           <Link to={`/products/${product?.documentId || ""}`}>
             View Details
           </Link>
         </Button>
-      </Card.Footer>
-    </Card.Root>
+      </CardFooter>
+    </Card>
   );
 }

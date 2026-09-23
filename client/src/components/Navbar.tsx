@@ -1,78 +1,44 @@
 import {
-  Flex,
-  HStack,
-  Link,
-  Button,
-  Input,
-  IconButton,
-  Stack,
-  Drawer,
-  InputGroup,
-} from "@chakra-ui/react";
-
-import { useColorMode } from "./ui/color-mode";
-
-import {
   LuSearch,
   LuSun,
   LuMoon,
   LuMenu,
 } from "react-icons/lu";
-
 import { useState } from "react";
-
 import {
   Link as RouterLink,
   useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+import { useTheme } from "next-themes";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 
 export default function Navbar() {
-  const { colorMode, toggleColorMode } = useColorMode();
-
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
-
   const navigate = useNavigate();
-
   const location = useLocation();
-
   const [searchParams] = useSearchParams();
 
   const category = searchParams.get("category");
-
   const search = searchParams.get("search") || "";
 
   const links = [
-    {
-      path: "/dashboard",
-      name: "Dashboard",
-    },
-    {
-      path: "/products",
-      name: "Products",
-    },
-    {
-      path: "/team",
-      name: "Team",
-    },
+    { path: "/dashboard", name: "Dashboard" },
+    { path: "/products", name: "Products" },
+    { path: "/team", name: "Team" },
   ];
 
-  // =========================
-  // Search
-  // =========================
-
-  function handleSearch(
-    e: React.ChangeEvent<HTMLInputElement>
-  ) {
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-
     const params = new URLSearchParams();
 
     if (category) {
       params.set("category", category);
     }
-
     if (value) {
       params.set("search", value);
     }
@@ -82,285 +48,124 @@ export default function Navbar() {
     );
   }
 
-  // =========================
-  // Active Route
-  // =========================
-
   function isActive(path: string) {
     if (path === "/products") {
       return location.pathname.startsWith("/products");
     }
-
     return location.pathname === path;
   }
 
+  const toggleTheme = () => {
+    const current = resolvedTheme || theme;
+    setTheme(current === "dark" ? "light" : "dark");
+  };
+
   return (
-    <Flex
-      as="nav"
-      px={{ base: 4, md: 6 }}
-      py={3}
-      justify="space-between"
-      align="center"
-      gap={4}
-      borderBottom="1px solid"
-      borderColor="border.subtle"
-      position="sticky"
-      top={0}
-      zIndex={1000}
-      bg="bg.panel"
-      backdropFilter="blur(10px)"
-    >
-      {/* ================= Logo ================= */}
-
-      <Link
-        asChild
-        fontWeight="bold"
-        fontSize={{ base: "lg", md: "xl" }}
-        color="teal.400"
-        textDecoration="none"
-        transition="all 0.2s ease"
-        _hover={{
-          color: "teal.300",
-          transform: "scale(1.03)",
-          textDecoration: "none",
-        }}
+    <nav className="sticky top-0 z-50 flex items-center justify-between gap-4 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-md md:px-6">
+      <RouterLink
+        to="/"
+        className="text-lg md:text-xl font-bold text-teal-500 transition-all duration-200 hover:scale-105 hover:text-teal-400"
       >
-        <RouterLink to="/">
-          My Logo
-        </RouterLink>
-      </Link>
+        My Logo
+      </RouterLink>
 
-      {/* ================= Search ================= */}
-
-      <InputGroup
-        startElement={
-          <LuSearch color="gray" />
-        }
-        maxW={{
-          base: "150px",
-          sm: "220px",
-          md: "320px",
-        }}
-        flex={1}
-        mx={{ base: 0, md: 4 }}
-      >
+      <div className="relative flex-1 max-w-[150px] sm:max-w-[220px] md:max-w-[320px] mx-0 md:mx-4">
+        <LuSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="text"
           value={search}
           placeholder="Search products..."
-          borderRadius="full"
-          size="sm"
-          variant="subtle"
+          className="rounded-full bg-muted/50 pl-9 focus-visible:ring-teal-500"
           onChange={handleSearch}
-          _focus={{
-            borderColor: "teal.400",
-            boxShadow: "0 0 0 1px var(--chakra-colors-teal-400)",
-          }}
         />
-      </InputGroup>
+      </div>
 
-      {/* ================= Desktop Links ================= */}
-
-      <HStack
-        gap={6}
-        hideBelow="md"
-      >
+      <div className="hidden md:flex items-center gap-6">
         {links.map((link) => {
           const active = isActive(link.path);
-
           return (
-            <Link
+            <RouterLink
               key={link.path}
-              asChild
-              position="relative"
-              fontWeight={active ? "600" : "500"}
-              color={
-                active
-                  ? "teal.400"
-                  : "fg.muted"
-              }
-              textDecoration="none"
-              transition="all 0.25s ease"
-              _hover={{
-                color: "teal.400",
-                transform: "translateY(-2px)",
-                textDecoration: "none",
-
-                _after: {
-                  width: "100%",
-                },
-              }}
-              _after={{
-                content: '""',
-                position: "absolute",
-                left: 0,
-                bottom: "-6px",
-                width: active ? "100%" : "0%",
-                height: "2px",
-                borderRadius: "full",
-                bg: "teal.400",
-                transition: "width 0.25s ease",
-              }}
+              to={link.path}
+              className={`relative font-medium transition-all duration-250 ease-in-out hover:text-teal-500 hover:-translate-y-0.5 group ${
+                active ? "text-teal-500 font-semibold" : "text-muted-foreground"
+              }`}
             >
-              <RouterLink to={link.path}>
-                {link.name}
-              </RouterLink>
-            </Link>
+              {link.name}
+              <span
+                className={`absolute left-0 -bottom-1.5 h-0.5 rounded-full bg-teal-500 transition-all duration-250 ease-in-out ${
+                  active ? "w-full" : "w-0 group-hover:w-full"
+                }`}
+              ></span>
+            </RouterLink>
           );
         })}
-      </HStack>
+      </div>
 
-      {/* ================= Actions ================= */}
-
-      <HStack gap={2}>
-        {/* Theme */}
-
-        <IconButton
-          aria-label="Toggle Color Mode"
-          onClick={toggleColorMode}
-          variant="ghost"
-          size="sm"
-          rounded="full"
-          _hover={{
-            bg: "teal.500/10",
-            color: "teal.400",
-            transform: "rotate(15deg)",
-          }}
-          transition="all 0.2s ease"
-        >
-          {colorMode === "light" ? (
-            <LuMoon />
-          ) : (
-            <LuSun />
-          )}
-        </IconButton>
-
-        {/* Login */}
-
+      <div className="flex items-center gap-2">
         <Button
-          size="sm"
-          colorPalette="teal"
-          borderRadius="full"
-          hideBelow="sm"
-          px={5}
-          transition="all 0.2s ease"
-          _hover={{
-            transform: "translateY(-2px)",
-            boxShadow: "lg",
-          }}
+          variant="ghost"
+          size="icon"
+          className="rounded-full hover:bg-teal-500/10 hover:text-teal-500 transition-all hover:rotate-12"
+          onClick={toggleTheme}
         >
-          Login
+          <LuSun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <LuMoon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
         </Button>
 
-        {/* Mobile Menu */}
-
-        <IconButton
-          hideFrom="md"
-          aria-label="Open Menu"
-          onClick={() => setOpen(true)}
-          variant="ghost"
+        <Button
+          asChild
           size="sm"
-          rounded="full"
-          _hover={{
-            bg: "teal.500/10",
-            color: "teal.400",
-          }}
+          className="hidden sm:inline-flex rounded-full bg-teal-600 px-5 text-white hover:bg-teal-700 hover:-translate-y-0.5 hover:shadow-lg transition-all"
         >
-          <LuMenu />
-        </IconButton>
-      </HStack>
+          <RouterLink to="/login">Login</RouterLink>
+        </Button>
 
-      {/* ================= Mobile Drawer ================= */}
-
-      <Drawer.Root
-        open={open}
-        onOpenChange={(e) =>
-          setOpen(e.open)
-        }
-        placement="end"
-      >
-        <Drawer.Backdrop />
-
-        <Drawer.Positioner>
-          <Drawer.Content>
-            <Drawer.CloseTrigger />
-
-            <Drawer.Header
-              borderBottomWidth="1px"
-              fontWeight="bold"
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden rounded-full hover:bg-teal-500/10 hover:text-teal-500"
             >
-              Menu
-            </Drawer.Header>
+              <LuMenu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right">
+            <SheetHeader className="border-b pb-4">
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="mt-4 flex flex-col gap-3">
+              {links.map((link) => {
+                const active = isActive(link.path);
+                return (
+                  <RouterLink
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setOpen(false)}
+                    className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:bg-teal-500/10 hover:text-teal-500 hover:translate-x-1 ${
+                      active
+                        ? "bg-teal-500/10 text-teal-500 font-semibold"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {link.name}
+                  </RouterLink>
+                );
+              })}
 
-            <Drawer.Body>
-              <Stack gap={3} mt={4}>
-                {links.map((link) => {
-                  const active = isActive(
-                    link.path
-                  );
-
-                  return (
-                    <Link
-                      key={link.path}
-                      asChild
-                      px={4}
-                      py={3}
-                      borderRadius="lg"
-                      fontWeight={
-                        active
-                          ? "600"
-                          : "500"
-                      }
-                      color={
-                        active
-                          ? "teal.400"
-                          : "fg.muted"
-                      }
-                      bg={
-                        active
-                          ? "teal.500/10"
-                          : "transparent"
-                      }
-                      textDecoration="none"
-                      transition="all 0.2s ease"
-                      _hover={{
-                        bg: "teal.500/10",
-                        color: "teal.400",
-                        transform:
-                          "translateX(5px)",
-                        textDecoration:
-                          "none",
-                      }}
-                    >
-                      <RouterLink
-                        to={link.path}
-                        onClick={() =>
-                          setOpen(false)
-                        }
-                      >
-                        {link.name}
-                      </RouterLink>
-                    </Link>
-                  );
-                })}
-
-                {/* Mobile Login */}
-
-                <Button
-                  colorPalette="teal"
-                  borderRadius="lg"
-                  mt={4}
-                  onClick={() =>
-                    setOpen(false)
-                  }
-                >
-                  Login
-                </Button>
-              </Stack>
-            </Drawer.Body>
-          </Drawer.Content>
-        </Drawer.Positioner>
-      </Drawer.Root>
-    </Flex>
+              <Button
+                asChild
+                className="mt-4 w-full rounded-lg bg-teal-600 text-white hover:bg-teal-700"
+                onClick={() => setOpen(false)}
+              >
+                <RouterLink to="/login">Login</RouterLink>
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </nav>
   );
 }

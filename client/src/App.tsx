@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 
 import "./App.css";
@@ -7,24 +6,12 @@ import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        justifyContent: "space-between",
-      }}
-    >
+    <div className="flex flex-col min-h-screen justify-between bg-background text-foreground">
       <Navbar />
 
-      <Box
-        as="main"
-        minH="calc(100vh - 200px)"
-        px={{ base: 3, md: 6 }}
-        py={{ base: 4, md: 6 }}
-      >
+      <main className="min-h-[calc(100vh-200px)] px-3 md:px-6 py-4 md:py-6">
         <Outlet />
-      </Box>
+      </main>
 
       <Footer />
     </div>

@@ -1,46 +1,49 @@
-import {
-  HStack,
-  Skeleton,
-  SkeletonCircle,
-  SkeletonText,
-  Stack,
-  VStack,
-} from "@chakra-ui/react"
-
+import { Skeleton } from "./ui/skeleton";
 
 export function ProductsSkeleton() {
   return (
-    <Stack gap="6" maxW="xs">
-      <HStack width="full">
-        <SkeletonCircle size="10" />
-        <SkeletonText noOfLines={2} />
-      </HStack>
-      <Skeleton height="200px" />
-    </Stack>
-  )
+    <div className="flex max-w-xs flex-col gap-6">
+      <div className="flex w-full items-center gap-4">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <div className="space-y-2 flex-1">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+        </div>
+      </div>
+      <Skeleton className="h-[200px] w-full rounded-xl" />
+    </div>
+  );
 }
+
 export function ProductDetailsSkeleton() {
   return (
-    <Stack gap="6" maxW="full" p={6} border="1px solid" borderColor="gray.800" borderRadius="md">
-      <VStack width="full">
-        <Skeleton boxSize={200} width={'90%'}/>
-        <SkeletonText noOfLines={2} />
-      </VStack>
-      <HStack width="full" justify="space-between">
-         <SkeletonText noOfLines={1} width='100px' />
-        <Skeleton height="50px" width='100px' />
-      </HStack>
-    </Stack>
-  )
+    <div className="flex flex-col gap-6 w-full p-6 border border-border rounded-md">
+      <div className="flex flex-col w-full gap-4 items-center">
+        <Skeleton className="h-[200px] w-[90%] rounded-xl" />
+        <div className="space-y-2 w-[90%]">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-[80%]" />
+        </div>
+      </div>
+      <div className="flex w-[90%] mx-auto justify-between items-center">
+        <Skeleton className="h-4 w-[100px]" />
+        <Skeleton className="h-[50px] w-[100px] rounded-md" />
+      </div>
+    </div>
+  );
 }
+
 export function CategoriesSkeleton() {
   return (
-    <Stack gap="6" maxW="xs">
-      <HStack width="full">
-        <SkeletonCircle size="10" />
-        <SkeletonText noOfLines={2} />
-      </HStack>
-      <Skeleton height="200px" />
-    </Stack>
-  )
+    <div className="flex max-w-xs flex-col gap-6">
+      <div className="flex w-full items-center gap-4">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <div className="space-y-2 flex-1">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+        </div>
+      </div>
+      <Skeleton className="h-[200px] w-full rounded-xl" />
+    </div>
+  );
 }

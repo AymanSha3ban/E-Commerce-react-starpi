@@ -5,6 +5,7 @@ import Team from "@/pages/Team";
 import Products from "@/pages/Products";
 import ProductDetails from "@/components/ProductDetails";
 import Dashboard from "@/pages/Dashboard";
+import Login from "@/pages/Login";
 
 export const router = createBrowserRouter([
     {path: "/", element: <App/>,
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
             {path: "/products", element: <Products/>},
             {path: "/products/:id", element: <ProductDetails />},
             {path: "/dashboard", element: <Dashboard/>},
+            {path: "/login", element: <Login/>},
         ]
     },
 ]);

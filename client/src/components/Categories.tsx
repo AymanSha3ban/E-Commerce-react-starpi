@@ -2,14 +2,6 @@ import { getCategories } from "@/api/categories/category";
 import { CategoriesSkeleton } from "@/components/Skeletons";
 import type { ICategory } from "@/interfaces/ICategory";
 
-import {
-  Center,
-  Flex,
-  Grid,
-  Link,
-  Text,
-} from "@chakra-ui/react";
-
 import { useQuery } from "@tanstack/react-query";
 
 import {
@@ -29,125 +21,63 @@ export default function Categories() {
   });
 
   const [searchParams] = useSearchParams();
-
   const activeCategory = searchParams.get("category");
 
   if (isLoading) {
     return (
-      <Grid
-        gap={6}
-        p={6}
-        m={6}
-        templateColumns="repeat(auto-fill, minmax(250px, 1fr))"
-        margin={30}
-      >
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6 p-6 m-6 mt-[30px] mb-[30px]">
         {Array.from(
           { length: 20 },
           (_, indx) => (
             <CategoriesSkeleton key={indx} />
           )
         )}
-      </Grid>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <Center h="50vh">
-        <Text color="red.400">
+      <div className="flex h-[50vh] items-center justify-center">
+        <p className="text-red-400">
           Error: {(error as Error).message}
-        </Text>
-      </Center>
+        </p>
+      </div>
     );
   }
 
   return (
-    <Flex
-      justify="center"
-      align="center"
-      gap={3}
-      wrap="wrap"
-      px={{ base: 3, md: 6 }}
-      py={5}
-      mb={6}
-      borderBottom="1px solid"
-      borderColor="gray.700"
-    >
+    <div className="flex justify-center items-center gap-3 flex-wrap px-3 md:px-6 py-5 mb-6 border-b border-border">
       {/* ALL */}
-      <Link
-        asChild
-        px={{ base: 4, md: 6 }}
-        py={2.5}
-        borderRadius="full"
-        fontWeight="600"
-        fontSize={{ base: "sm", md: "md" }}
-        textDecoration="none"
-        bg={!activeCategory ? "teal.500" : "transparent"}
-        color={!activeCategory ? "white" : "gray.300"}
-        border="1px solid"
-        borderColor={
+      <RouterLink
+        to="/products"
+        className={`px-4 md:px-6 py-2.5 rounded-full font-semibold text-sm md:text-base border transition-all duration-250 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-500/25 ${
           !activeCategory
-            ? "teal.500"
-            : "gray.600"
-        }
-        transition="all 0.25s ease"
-        _hover={{
-          bg: "teal.500",
-          color: "white",
-          borderColor: "teal.500",
-          transform: "translateY(-2px)",
-          boxShadow: "0 6px 18px rgba(20, 184, 166, 0.25)",
-          textDecoration: "none",
-        }}
+            ? "bg-teal-500 text-white border-teal-500"
+            : "bg-transparent text-muted-foreground border-border hover:bg-teal-500 hover:text-white hover:border-teal-500"
+        }`}
       >
-        <RouterLink to="/products">
-          ALL
-        </RouterLink>
-      </Link>
+        ALL
+      </RouterLink>
 
       {/* Categories */}
       {categories?.map((category: ICategory) => {
-        const isActive =
-          activeCategory === String(category.id);
+        const isActive = activeCategory === String(category.id);
 
         return (
-          <Link
+          <RouterLink
             key={category.id}
-            asChild
-            px={{ base: 4, md: 6 }}
-            py={2.5}
-            borderRadius="full"
-            fontWeight="600"
-            fontSize={{ base: "sm", md: "md" }}
-            letterSpacing="0.3px"
-            textDecoration="none"
-            bg={isActive ? "teal.500" : "transparent"}
-            color={isActive ? "white" : "gray.300"}
-            border="1px solid"
-            borderColor={
+            to={`/products?category=${category.id}`}
+            className={`px-4 md:px-6 py-2.5 rounded-full font-semibold text-sm md:text-base tracking-wide border transition-all duration-250 ease-in-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-500/25 ${
               isActive
-                ? "teal.500"
-                : "gray.600"
-            }
-            transition="all 0.25s ease"
-            _hover={{
-              bg: "teal.500",
-              color: "white",
-              borderColor: "teal.500",
-              transform: "translateY(-2px)",
-              boxShadow:
-                "0 6px 18px rgba(20, 184, 166, 0.25)",
-              textDecoration: "none",
-            }}
+                ? "bg-teal-500 text-white border-teal-500"
+                : "bg-transparent text-muted-foreground border-border hover:bg-teal-500 hover:text-white hover:border-teal-500"
+            }`}
           >
-            <RouterLink
-              to={`/products?category=${category.id}`}
-            >
-              {category.title.toUpperCase()}
-            </RouterLink>
-          </Link>
+            {category.title.toUpperCase()}
+          </RouterLink>
         );
       })}
-    </Flex>
+    </div>
   );
 }
