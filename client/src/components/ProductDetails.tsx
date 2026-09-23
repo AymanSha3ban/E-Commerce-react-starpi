@@ -7,11 +7,14 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { useCartState } from "@/Store/CartStore";
 
 export default function ProductDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
+
+  const addOrder = useCartState(state => state.addOrder) ;
 
   const {
     data: product,
@@ -21,6 +24,13 @@ export default function ProductDetails() {
     queryKey: ["product", id],
     queryFn: () => getProductsByID(String(id)),
   });
+
+  const addToCartHandeler = () => {
+    if (!product) return;
+    
+    console.log("Added Product:", product.title, "With Quantity:", quantity);
+    addOrder({ product, quantity });
+  };
 
   if (isLoading) {
     return (
@@ -141,6 +151,7 @@ export default function ProductDetails() {
               size="lg"
               className="w-full rounded-xl bg-teal-600 text-white hover:bg-teal-700 transition-all active:scale-95"
               disabled={!product?.stock}
+              onClick={addToCartHandeler}
             >
               <LuShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
             </Button>
