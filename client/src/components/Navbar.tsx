@@ -34,7 +34,7 @@ export default function Navbar() {
   const links = [
     { path: "/dashboard", name: "Dashboard" },
     { path: "/products", name: "Products" },
-    { path: "/team", name: "Team" },
+    { path: "/about", name: "About Us" },
   ];
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {

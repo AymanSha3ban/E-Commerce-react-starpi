@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { Link } from "react-router-dom"
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:1337"
 
@@ -14,8 +15,8 @@ export default function CartPage() {
   const removeOrder = useCartState((state) => state.removeOrder)
   const removeAllOrder = useCartState((state) => state.removeAllOrder)
 
-  const subtotal = orders.reduce((acc, item) => acc + (item.product?.price || 0) * item.quantity, 0)
-  const totalItems = orders.reduce((acc, item) => acc + item.quantity, 0)
+  const subtotal = orders.reduce((prev, item) => prev + (item.product?.price || 0) * item.quantity, 0)
+  const totalItems = orders.reduce((prev, item) => prev + item.quantity, 0)
 
   const getImageUrl = (url?: string) => {
     if (!url) return null
@@ -35,7 +36,9 @@ export default function CartPage() {
             Looks like you haven't added anything to your cart yet. Explore our products and start shopping!
           </p>
           <Button className="mt-4 gap-2">
-            <ArrowLeft className="w-4 h-4" /> Continue Shopping
+            <Link to="/products" className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" /> Continue Shopping
+            </Link>
           </Button>
         </Card>
       </div>
@@ -73,11 +76,13 @@ export default function CartPage() {
                 <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                   <div className="w-full h-48 sm:w-28 sm:h-28 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden border">
                       {imageUrl ? (
-                      <img 
+                      <Link to={`/products/${order.product?.documentId || ""}`} className="w-full h-full">
+                        <img 
                           src={imageUrl} 
                           alt={order.product.title} 
                           className="w-full h-full object-cover" 
-                      />
+                        /> 
+                      </Link>      
                       ) : (
                       <ShoppingBag className="w-8 h-8 text-muted-foreground" />
                       )}
@@ -99,9 +104,9 @@ export default function CartPage() {
                         className="h-8 w-8 rounded-sm"
                         onClick={() => decrease(order)}
                         disabled={order.quantity <= 1}
-                      >
-                        <Minus className="w-3.5 h-3.5" />
-                      </Button>
+                       >
+                         <Minus className="w-3.5 h-3.5" />
+                       </Button>
                       <span className="w-8 text-center text-sm font-semibold">
                         {order.quantity}
                       </span>
@@ -110,6 +115,7 @@ export default function CartPage() {
                         size="icon"
                         className="h-8 w-8 rounded-sm"
                         onClick={() => increase(order)}
+                        disabled={Boolean(order.product?.stock && order.quantity >= order.product.stock)}
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </Button>
@@ -130,6 +136,19 @@ export default function CartPage() {
                     </div>
                   </div>
                 </CardContent>
+                <CardFooter className="p-4 sm:p-6 flex justify-between items-center text-sm text-muted-foreground">
+                  <div>
+                    <span className={order.quantity > order.product?.stock ? "text-destructive" : "text-green-500"}>
+                      {order.quantity > order.product?.stock ? "Out of Stock: ": "In Stock"}
+                    </span>
+                    {order.quantity > order.product?.stock && (
+                      <span className="text-destructive">
+                        {order.quantity - (order.product?.stock || 0)}  product(s) you will not receive.
+                      </span>
+                    )}
+                  </div>
+                  <span>Stock: {order.product?.stock || 0}</span>
+                </CardFooter>
               </Card>
             )
           })}
@@ -147,7 +166,7 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Estimated Shipping</span>
-                <span className="font-medium">Free</span>
+                <span className="font-medium text-green-500">Free</span>
               </div>
               <Separator />
               <div className="flex justify-between text-lg font-bold">

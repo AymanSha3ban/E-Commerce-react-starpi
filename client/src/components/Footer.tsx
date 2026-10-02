@@ -24,11 +24,11 @@ export default function Footer() {
             <Link to="/products" className="text-sm transition-colors hover:text-teal-500">
               Products
             </Link>
+            <Link to="/dashboard" className="text-sm transition-colors hover:text-teal-500">
+              Dashboard
+            </Link>
             <Link to="/about" className="text-sm transition-colors hover:text-teal-500">
               About Us
-            </Link>
-            <Link to="/contact" className="text-sm transition-colors hover:text-teal-500">
-              Contact
             </Link>
           </div>
 

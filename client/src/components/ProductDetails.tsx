@@ -15,7 +15,7 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
 
   const addOrder = useCartState(state => state.addOrder) ;
-
+  const outOfStock = useCartState((state) => state.outOfStock()) ;
   const {
     data: product,
     isLoading,
@@ -150,7 +150,7 @@ export default function ProductDetails() {
             <Button
               size="lg"
               className="w-full rounded-xl bg-teal-600 text-white hover:bg-teal-700 transition-all active:scale-95"
-              disabled={!product?.stock}
+              disabled={outOfStock || !product?.stock}
               onClick={addToCartHandeler}
             >
               <LuShoppingCart className="mr-2 h-5 w-5" /> Add to Cart

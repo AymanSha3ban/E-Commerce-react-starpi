@@ -10,24 +10,25 @@ interface ICartState {
     addOrder: (order: orderType)=>void,
     increaseQuantity : (order: orderType)=>void,
     decreaseQuantity : (order: orderType)=>void,
+    outOfStock : () => boolean,
     removeOrder : (order: orderType)=>void,
     removeAllOrder : ()=>void,
 } 
 export const useCartState = create<ICartState>()(
     persist(
-        (set)=>({
+        (set , get)=>({
             orders: [] ,
             addOrder:(order)=>{
                 set(state => {
                     const OrderInCart= state.orders.find(item =>item.product.documentId === order.product.documentId) ;
                     if(OrderInCart){
-                        const OrderWithQuantity = state.orders.map((item : orderType)=>{
+                        const SameOrderWithQuantity = state.orders.map((item : orderType)=>{
                             if(item.product.documentId===order.product.documentId)
                                 return { ...item, quantity: item.quantity+order.quantity }
                             else return item 
                         })
                         return {
-                            orders : OrderWithQuantity
+                            orders : SameOrderWithQuantity
                         } 
                     }
                     else{
@@ -61,6 +62,7 @@ export const useCartState = create<ICartState>()(
                     } 
                 })
             },
+            outOfStock : () => get().orders.some(item => item.quantity >= item.product?.stock),
             removeOrder : (order)=>{
                 set((state)=>{
                     const filterdOrders = state.orders.filter((item)=>item.product.documentId !== order.product.documentId)
