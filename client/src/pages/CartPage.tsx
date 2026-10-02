@@ -175,9 +175,11 @@ export default function CartPage() {
               </div>
             </CardContent>
             <CardFooter className="flex-col gap-3">
-              <Button className="w-full text-base py-5" size="lg">
-                Proceed to Checkout
-              </Button>
+              <Link to="/checkout" className="w-full">
+                <Button className="w-full bg-teal-600 hover:bg-teal-700 hover:scale-105 duration-300 border text-white border-teal-600 transition-all">
+                  Proceed to Checkout
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
         </div>
