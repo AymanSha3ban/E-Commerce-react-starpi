@@ -73,9 +73,9 @@
     },
     "order": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::order.order",
-      "inversedBy": "user"
+      "mappedBy": "user"
     }
   }
 }

@@ -45,22 +45,16 @@
         "cancelled"
       ]
     },
-    "order_items": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::order-item.order-item"
-    },
-    "order_item": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::order-item.order-item",
-      "inversedBy": "order"
-    },
     "user": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "mappedBy": "order"
+      "inversedBy": "order"
+    },
+    "order_items": {
+      "type": "component",
+      "component": "shared.orders",
+      "repeatable": true
     }
   }
 }

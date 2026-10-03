@@ -13,10 +13,7 @@ export const CheckoutSchema = z
     email: z.string().trim().email({ message: "Invalid email address" }),
     phone: z
       .string()
-      .trim()
-      .regex(/^01[0125][0-9]{8}$/, {
-        message: "Please enter a valid Egyptian phone number (e.g., 01012345678)",
-      }),
+      .trim(),
     address: z
       .string()
       .trim()

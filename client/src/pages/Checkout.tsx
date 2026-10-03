@@ -1,14 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { CardFooter, Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CreditCard, Truck , Building2, Lock } from "lucide-react";
+import { CreditCard, Truck, Building2, Lock, ShieldCheck } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { CheckoutSchema, type CheckoutFormData } from "@/Schema/CheckoutSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IMaskInput } from "react-imask";
-import OrderSummary from "@/components/OrderSummary";
+
+import { addOrder } from "@/api/orders/orders";
+import { useMutation } from "@tanstack/react-query";
+import { Separator } from "@radix-ui/react-separator";
+import { useCartState } from "@/Store/CartStore";
+import type { IOrderInput } from "@/interfaces/IOrder";
+import OrderSuccess from "@/components/OrderSuccess";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:1337";
 
 export default function CheckoutPage() {
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -22,14 +34,66 @@ export default function CheckoutPage() {
     },
   });
 
+  const orders = useCartState((state) => state.orders);
+  const removeAllOrder = useCartState((state) => state.removeAllOrder);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: addOrder,
+    onSuccess: () => {
+      setIsSuccess(true);
+    },
+    onError: (error) => {
+      console.log("Failed to create order", error);
+    },
+  });
+
   const selectedPayment = watch("paymentMethod");
 
+  const subtotal = orders.reduce(
+    (sum, order) => sum + order.product.price * order.quantity,
+    0
+  );
+
+  const total = subtotal;
+
+  const getImageUrl = (url?: string) => {
+    if (!url) return null;
+    if (url.startsWith("http://") || url.startsWith("https://")) return url;
+    return `${API_URL}${url}`;
+  };
+
   const onSubmit = (data: CheckoutFormData) => {
-    console.log("Submitted Checkout Data:", data);
+    const orderData: IOrderInput = {
+      customerName: `${data.firstName} ${data.lastName}`,
+      customerEmail: data.email,
+      customerPhone: data.phone,
+      shippingAddress: data.address,
+      city: data.city,
+      total: total,
+      orderStatus: "pending",
+      order_items: orders.map((order) => ({
+        product: order.product.documentId,
+        quantity: order.quantity,
+        unitPrice: order.product.price,
+      })),
+    };
+    mutate(orderData);
+  };
+
+  const handleSuccessComplete = () => {
+    removeAllOrder();
+    setIsSuccess(false);
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl">
+    <div className="container mx-auto py-8 px-4 max-w-7xl relative">
+      {isSuccess && (
+        <OrderSuccess
+          redirectDelay={4000}
+          onComplete={handleSuccessComplete}
+        />
+      )}
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Checkout</h1>
         <Badge variant="outline" className="gap-1 border-teal-500/30 text-teal-500 p-2">
@@ -39,7 +103,6 @@ export default function CheckoutPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-7 space-y-6">
-          {/* Shipping Address */}
           <Card>
             <CardHeader className="flex flex-row items-center gap-3">
               <Truck className="w-5 h-5 text-teal-500" />
@@ -72,7 +135,6 @@ export default function CheckoutPage() {
                   )}
                 </div>
 
-                {/* Phone Number with IMask */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Phone Number</label>
                   <Controller
@@ -122,7 +184,6 @@ export default function CheckoutPage() {
             </CardContent>
           </Card>
 
-          {/* Payment Method */}
           <Card>
             <CardHeader className="flex flex-row items-center gap-3">
               <CreditCard className="w-5 h-5 text-teal-500" />
@@ -190,7 +251,6 @@ export default function CheckoutPage() {
 
               {selectedPayment === "CARD" && (
                 <div className="mt-4 p-4 rounded-lg bg-muted/40 space-y-4 border animate-in fade-in-50 duration-200">
-                  {/* Card Number with IMask */}
                   <div className="space-y-2">
                     <label className="text-xs font-medium">Card Number</label>
                     <Controller
@@ -213,7 +273,6 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    {/* Expiry Date with IMask */}
                     <div className="space-y-2">
                       <label className="text-xs font-medium">Expiry Date</label>
                       <Controller
@@ -235,7 +294,6 @@ export default function CheckoutPage() {
                       )}
                     </div>
 
-                    {/* CVC Input */}
                     <div className="space-y-2">
                       <label className="text-xs font-medium">CVC / CVV</label>
                       <Controller
@@ -263,8 +321,85 @@ export default function CheckoutPage() {
           </Card>
         </div>
 
-        {/* Order Summary */}
-        <OrderSummary isSubmitting={isSubmitting} />
+        <div className="lg:col-span-5 space-y-6">
+          <Card className="sticky top-6">
+            <CardHeader>
+              <CardTitle>Order Summary</CardTitle>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+              <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                {orders.map((order) => {
+                  const itemTotal = order.product.price * order.quantity;
+                  const imgPath = order.product?.thumbnail?.url;
+                  const imageUrl = getImageUrl(imgPath);
+                  return (
+                    <div
+                      key={order.product.documentId}
+                      className="flex items-center justify-between gap-3 text-sm"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-md bg-muted overflow-hidden flex-shrink-0 border">
+                          <img
+                            src={imageUrl && imageUrl !== "null" ? imageUrl : ""}
+                            alt={order.product.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div>
+                          <p className="font-medium line-clamp-1">
+                            {order.product.title}
+                          </p>
+
+                          <p className="text-xs text-muted-foreground">
+                            Qty: {order.quantity} × ${order.product.price.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <p className="font-semibold">
+                        ${itemTotal.toFixed(2)}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Shipping</span>
+                  <span className="text-teal-500 font-medium">Free</span>
+                </div>
+
+                <Separator />
+
+                <div className="flex justify-between font-bold text-lg pt-1">
+                  <span>Total</span>
+                  <span className="text-teal-500">
+                    ${total.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+
+            <CardFooter className="flex-col gap-3">
+              <Button
+                type="submit"
+                disabled={isPending}
+                size="lg"
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white py-6 font-semibold"
+              >
+                {isSubmitting || isPending ? "Processing..." : "Place Order"}
+              </Button>
+
+              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
+                <ShieldCheck className="w-4 h-4 text-teal-500" />
+                <span>30-Day Money Back Guarantee</span>
+              </div>
+            </CardFooter>
+          </Card>
+        </div>
       </form>
     </div>
   );
