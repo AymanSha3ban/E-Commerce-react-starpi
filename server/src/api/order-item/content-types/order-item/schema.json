@@ -19,17 +19,17 @@
       "type": "decimal",
       "required": true
     },
-    "product": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::product.product",
-      "inversedBy": "order_item"
-    },
     "order": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::order.order",
       "mappedBy": "order_item"
+    },
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product",
+      "inversedBy": "order_item"
     }
   }
 }

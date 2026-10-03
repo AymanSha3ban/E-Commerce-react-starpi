@@ -42,6 +42,11 @@
       "target": "api::category.category",
       "mappedBy": "products"
     },
+    "order_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item"
+    },
     "order_item": {
       "type": "relation",
       "relation": "oneToOne",

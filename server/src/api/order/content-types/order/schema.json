@@ -45,12 +45,10 @@
         "cancelled"
       ]
     },
-    "user": {
+    "order_items": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "required": false,
-      "inversedBy": "orders"
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item"
     },
     "order_item": {
       "type": "relation",
@@ -58,10 +56,11 @@
       "target": "api::order-item.order-item",
       "inversedBy": "order"
     },
-    "order_items": {
+    "user": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::order-item.order-item"
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "order"
     }
   }
 }
