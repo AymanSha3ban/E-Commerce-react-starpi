@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, Eye, EyeOff, LogIn, ArrowRight, Loader2, AlertCircle } from "lucide-react";
-import { LoginSchema, type LoginFormData } from "@/Schema/Login";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { User, Mail, Lock, Eye, EyeOff, UserPlus, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "@/api/auth/auth";
-import { useAuthStore } from "@/Store/authStore";
+import { registerUser } from "@/api/auth/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RegisterSchema, type RegisterFormData } from "@/Schema/Register";
+import { useForm } from "react-hook-form";
 
-export default function Login() {
+export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -19,21 +18,16 @@ export default function Login() {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(RegisterSchema),
   });
 
-  const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
-
   const { mutate, isPending } = useMutation({
-    mutationFn: loginUser,
+    mutationFn: registerUser,
     onSuccess: (data) => {
-      setErrorMessage(null);
-      login(data.jwt, data.user);
-      navigate("/");
+      console.log("Registration successful:", data);
     },
-    onError: (error: any) => {
+    onError: (error : any) => {
       const message =
         error?.response?.data?.error?.message ||
         "Invalid email or password. Please try again.";
@@ -41,8 +35,7 @@ export default function Login() {
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    setErrorMessage(null);
+  const onSubmit = (data: RegisterFormData) => {
     mutate(data);
   };
 
@@ -51,16 +44,16 @@ export default function Login() {
       <Card className="w-full max-w-sm border-border bg-card text-card-foreground shadow-xl rounded-xl">
         <CardHeader className="space-y-1 text-center p-4 pb-2">
           <div className="mx-auto mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
-            <LogIn className="h-5 w-5" />
+            <UserPlus className="h-5 w-5" />
           </div>
-          <CardTitle className="text-xl font-bold tracking-tight">Welcome back</CardTitle>
+          <CardTitle className="text-xl font-bold tracking-tight">Create account</CardTitle>
           <CardDescription className="text-xs text-muted-foreground">
-            Enter your credentials to login
+            Enter details to create account
           </CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="space-y-3 p-4 pt-2">
+          <CardContent className="space-y-2.5 p-4 pt-2">
             {/* Global API Error Alert */}
             {errorMessage && (
               <div className="flex items-center gap-2 p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
@@ -68,26 +61,47 @@ export default function Login() {
                 <span>{errorMessage}</span>
               </div>
             )}
-
-            {/* Identifier (Email / Username) */}
+            {/* Username */}
             <div className="space-y-1">
-              <label htmlFor="identifier" className="text-xs font-medium text-foreground">
+              <label htmlFor="name" className="text-xs font-medium text-foreground">
+                Username
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  {...register("username")}
+                  className={`pl-9 h-9 text-xs bg-background focus-visible:ring-teal-500 ${
+                    errors.username ? "border-destructive focus-visible:ring-destructive" : "border-input"
+                  }`}
+                />
+              </div>
+              {errors.username && (
+                <p className="text-[11px] text-destructive">{errors.username.message}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="space-y-1">
+              <label htmlFor="email" className="text-xs font-medium text-foreground">
                 Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="identifier"
-                  type="text"
+                  id="email"
+                  type="email"
                   placeholder="name@example.com"
-                  {...register("identifier")}
+                  {...register("email")}
                   className={`pl-9 h-9 text-xs bg-background focus-visible:ring-teal-500 ${
-                    errors.identifier ? "border-destructive focus-visible:ring-destructive" : "border-input"
+                    errors.email ? "border-destructive focus-visible:ring-destructive" : "border-input"
                   }`}
                 />
               </div>
-              {errors.identifier && (
-                <p className="text-[11px] text-destructive">{errors.identifier.message}</p>
+              {errors.email && (
+                <p className="text-[11px] text-destructive">{errors.email.message}</p>
               )}
             </div>
 
@@ -120,38 +134,20 @@ export default function Login() {
               )}
             </div>
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between text-xs pt-1">
-              <label className="flex items-center space-x-2 cursor-pointer text-muted-foreground hover:text-foreground">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="rounded border-input bg-background accent-teal-500"
-                />
-                <span>Remember me</span>
-              </label>
-              <Link
-                to="/forgot-password"
-                className="text-teal-400 font-medium hover:text-teal-300 hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={isPending}
-              className="w-full h-9 mt-1 bg-teal-500 hover:bg-teal-600 text-slate-950 font-semibold text-xs gap-2 shadow-lg shadow-teal-500/10"
+              className="w-full h-9 mt-2 bg-teal-500 hover:bg-teal-600 text-slate-950 font-semibold text-xs gap-2 shadow-lg shadow-teal-500/10"
             >
               {isPending ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>Logging in...</span>
+                  <span>Creating Account...</span>
                 </>
               ) : (
                 <>
-                  <span>Login</span>
+                  <span>Create Account</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </>
               )}
@@ -160,12 +156,12 @@ export default function Login() {
 
           <CardFooter className="flex justify-center border-t border-border p-3">
             <p className="text-xs text-muted-foreground">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to="/register"
+                to="/login"
                 className="text-teal-400 font-semibold hover:text-teal-300 hover:underline"
               >
-                Register
+                Login
               </Link>
             </p>
           </CardFooter>

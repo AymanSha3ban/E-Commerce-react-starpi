@@ -8,6 +8,7 @@ import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import CartPage from "@/pages/CartPage";
 import Checkout from "@/pages/Checkout";
+import Register from "@/pages/Register";
 
 export const router = createBrowserRouter([
     {path: "/", element: <App/>,
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
             {path: "/products/:id", element: <ProductDetails />},
             {path: "/dashboard", element: <Dashboard/>},
             {path: "/login", element: <Login/>},
+            {path: "/register", element: <Register/>},
         ]
     },
 ]);

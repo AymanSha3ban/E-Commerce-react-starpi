@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CreditCard, Truck, Building2, Lock, ShieldCheck } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
-import { CheckoutSchema, type CheckoutFormData } from "@/Schema/CheckoutSchema";
+import { CheckoutSchema, type CheckoutFormData } from "@/Schema/Checkout";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IMaskInput } from "react-imask";
 
