@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,10 +22,12 @@ export default function Register() {
     resolver: zodResolver(RegisterSchema),
   });
 
+  const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
     mutationFn: registerUser,
-    onSuccess: (data) => {
-      console.log("Registration successful:", data);
+    onSuccess: () => {
+      console.log("Registration successful:");
+        navigate("/login");
     },
     onError: (error : any) => {
       const message =

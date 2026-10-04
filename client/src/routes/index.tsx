@@ -9,19 +9,29 @@ import Login from "@/pages/Login";
 import CartPage from "@/pages/CartPage";
 import Checkout from "@/pages/Checkout";
 import Register from "@/pages/Register";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export const router = createBrowserRouter([
-    {path: "/", element: <App/>,
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "/about", element: <Team /> },
+      { path: "/cart", element: <CartPage /> },
+      { path: "/products", element: <Products /> },
+      { path: "/products/:id", element: <ProductDetails /> },
+
+      {
+        element: <ProtectedRoute />,
         children: [
-            {index:true , element: <Home/>},
-            {path: "/about", element: <Team/>},
-            {path: "/cart", element: <CartPage/>},
-            {path: "/products", element: <Products/>},
-            {path: "/checkout", element: <Checkout/>},
-            {path: "/products/:id", element: <ProductDetails />},
-            {path: "/dashboard", element: <Dashboard/>},
-            {path: "/login", element: <Login/>},
-            {path: "/register", element: <Register/>},
-        ]
-    },
+          { path: "/checkout", element: <Checkout /> },
+          { path: "/dashboard", element: <Dashboard /> },
+        ],
+      },
+
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+    ],
+  },
 ]);
