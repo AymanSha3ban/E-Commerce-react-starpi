@@ -1,3 +1,11 @@
+export interface IUserRole {
+  id: number;
+  documentId: string;
+  name: string;
+  description: string;
+  type: string;
+}
+
 export interface IUser {
   id: number;
   documentId: string;
@@ -7,4 +15,5 @@ export interface IUser {
   blocked: boolean;
   createdAt: string;
   updatedAt: string;
+  role: IUserRole;
 }

@@ -18,6 +18,6 @@ export const loginUser = async(userData :LoginFormData) => {
 }
 
 export const getMe = async () => {
-  const response = await PrivateAPI.get("/api/users/me");
+  const response = await PrivateAPI.get("/api/users/me?populate=role");
   return response.data;
 };

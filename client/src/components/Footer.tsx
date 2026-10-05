@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { LuGithub, LuTwitter, LuLinkedin, LuInstagram } from "react-icons/lu";
 import { Button } from "./ui/button";
+import { useAuthStore } from "@/Store/authStore";
 
 export default function Footer() {
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role?.name === "Admin";
   return (
     <footer className="mt-auto border-t border-border bg-background text-muted-foreground">
       <div className="mx-auto max-w-6xl px-4 py-8 md:px-6">
@@ -24,9 +27,14 @@ export default function Footer() {
             <Link to="/products" className="text-sm transition-colors hover:text-teal-500">
               Products
             </Link>
-            <Link to="/dashboard" className="text-sm transition-colors hover:text-teal-500">
-              Dashboard
-            </Link>
+            {isAdmin && (
+              <Link
+                to="/dashboard"
+                className="text-sm transition-colors hover:text-teal-500"
+              >
+                Dashboard
+              </Link>
+            )}
             <Link to="/about" className="text-sm transition-colors hover:text-teal-500">
               About Us
             </Link>

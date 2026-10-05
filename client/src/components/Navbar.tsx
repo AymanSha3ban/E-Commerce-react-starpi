@@ -32,6 +32,7 @@ export default function Navbar() {
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role?.name === "Admin";
   const logout = useAuthStore((state) => state.logout);
 
   const orders = useCartState((state) => state.orders);
@@ -41,10 +42,10 @@ export default function Navbar() {
   const search = searchParams.get("search") || "";
 
   const links = [
-    { path: "/dashboard", name: "Dashboard" },
-    { path: "/products", name: "Products" },
-    { path: "/about", name: "About Us" },
-  ];
+  ...(isAdmin ? [{ path: "/dashboard", name: "Dashboard" }] : []),
+  { path: "/products", name: "Products" },
+  { path: "/about", name: "About Us" },
+];
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
