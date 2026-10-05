@@ -1,8 +1,7 @@
-import axios from "axios";
-import { API } from "../BaseAPI";
+import {PublicAPI } from "../BaseAPI";
 
 
 export async function getCategories(){
-    const response = await axios.get(`${API}/api/categories`);
+    const response = await PublicAPI.get(`/api/categories`);
     return response.data.data ;
 }
