@@ -39,7 +39,7 @@
       "type": "enumeration",
       "enum": [
         "pending",
-        "confirmed",
+        "processing",
         "shipped",
         "delivered",
         "cancelled"

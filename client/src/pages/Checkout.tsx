@@ -13,7 +13,7 @@ import { addOrder } from "@/api/orders/orders";
 import { useMutation } from "@tanstack/react-query";
 import { Separator } from "@radix-ui/react-separator";
 import { useCartState } from "@/Store/CartStore";
-import type { IOrderInput } from "@/interfaces/IOrder";
+import type { IOrder } from "@/interfaces/IOrder";
 import OrderSuccess from "@/components/OrderSuccess";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:1337";
@@ -63,7 +63,7 @@ export default function CheckoutPage() {
   };
 
   const onSubmit = (data: CheckoutFormData) => {
-    const orderData: IOrderInput = {
+    const orderData: IOrder = {
       customerName: `${data.firstName} ${data.lastName}`,
       customerEmail: data.email,
       customerPhone: data.phone,
@@ -72,7 +72,7 @@ export default function CheckoutPage() {
       total: total,
       orderStatus: "pending",
       order_items: orders.map((order) => ({
-        product: order.product.documentId,
+        productId: order.product.documentId,
         quantity: order.quantity,
         unitPrice: order.product.price,
       })),

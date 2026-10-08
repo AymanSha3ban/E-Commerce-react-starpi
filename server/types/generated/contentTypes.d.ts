@@ -597,7 +597,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     order_items: Schema.Attribute.Component<'shared.orders', true>;
     orderStatus: Schema.Attribute.Enumeration<
-      ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
+      ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
     >;
     publishedAt: Schema.Attribute.DateTime;
     shippingAddress: Schema.Attribute.Text & Schema.Attribute.Required;

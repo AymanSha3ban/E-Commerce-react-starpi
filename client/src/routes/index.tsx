@@ -11,6 +11,7 @@ import Checkout from "@/pages/Checkout";
 import Register from "@/pages/Register";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminRoute from "@/components/AdminRoute";
+import OrderDetails from "@/pages/OrderDetails";
 
 export const router = createBrowserRouter([
   {
@@ -27,7 +28,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "/checkout", element: <Checkout /> },
           { path: "/cart", element: <CartPage /> },
-        ],
+        ]
       },
       {
         element: <AdminRoute />,
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
           {
             path: "/dashboard",
             element: <Dashboard />,
+          },
+          {
+            path: "/dashboard/orders/:id",
+            element: <OrderDetails />,
           },
         ],
       },

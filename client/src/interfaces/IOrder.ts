@@ -1,13 +1,15 @@
 import type { IProduct } from "./IProduct";
 
-// Order Interfaces
 export interface IOrderItem {
-  product: IProduct;
+  productId: string;
   quantity: number;
   unitPrice: number;
+  product?:IProduct ;
 }
 
 export interface IOrder {
+  id?: number;
+  documentId?: string;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -16,22 +18,6 @@ export interface IOrder {
   total: number;
   orderStatus: string;
   order_items: IOrderItem[];
-}
-
-// Input interfaces for creating an order & API request
-export interface IOrderItemInput {
-  product: string;
-  quantity: number;
-  unitPrice: number;
-}
-
-export interface IOrderInput {
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  shippingAddress: string;
-  city: string;
-  total: number;
-  orderStatus: string;
-  order_items: IOrderItemInput[];
+  createdAt?: string;
+  updatedAt?: string;
 }
