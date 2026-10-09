@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import axios from "axios";
-
+import { Toaster } from "react-hot-toast";
 import "./App.css";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
@@ -52,6 +52,7 @@ function App() {
       </main>
 
       <Footer />
+      <Toaster position="top-right" />
     </div>
   );
 }

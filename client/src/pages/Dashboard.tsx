@@ -3,8 +3,6 @@ import {
   ShoppingBag,
   Users,
   Package,
-  Trash2,
-  ShieldCheck,
   Search,
   Bell,
   Menu,
@@ -13,72 +11,15 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-
 import RecentOrders from "@/components/RecentOrders"
 import MangeProducts from "@/components/MangeProducts"
 
-interface IProduct {
-  id: string
-  name: string
-  price: number
-  category: string
-  stock: number
-}
-
-interface IUser {
-  id: string
-  name: string
-  email: string
-  role: "Customer" | "Admin"
-  joinedDate: string
-  totalOrders: number
-  totalSpent: number
-}
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"orders" | "products" | "users">("orders")
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
 
-  const [users, setUsers] = useState<IUser[]>([
-    {
-      id: "usr_1",
-      name: "Ahmed Hassan",
-      email: "ahmed@example.com",
-      role: "Customer",
-      joinedDate: "2026-02-15",
-      totalOrders: 5,
-      totalSpent: 450.0,
-    },
-    {
-      id: "usr_2",
-      name: "Sara Mohamed",
-      email: "sara@example.com",
-      role: "Admin",
-      joinedDate: "2026-01-10",
-      totalOrders: 12,
-      totalSpent: 1200.5,
-    },
-  ])
 
-  
-
-  const handleToggleAdmin = (userId: string) => {
-    setUsers(
-      users.map((u) => {
-        if (u.id === userId) {
-          return { ...u, role: u.role === "Admin" ? "Customer" : "Admin" }
-        }
-        return u
-      })
-    )
-  }
-
-  const handleDeleteUser = (userId: string) => {
-    if (confirm("Are you sure you want to delete this user account?")) {
-      setUsers(users.filter((u) => u.id !== userId))
-    }
-  }
 
   return (
     <div className="flex w-full min-h-[calc(100vh-4rem)] bg-background text-foreground relative">
@@ -141,21 +82,6 @@ export default function Dashboard() {
               <Package className="w-4 h-4" />
               <span>Manage Products</span>
             </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("users")
-                setIsSidebarOpen(false)
-              }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-colors ${
-                activeTab === "users"
-                  ? "bg-teal-500/10 text-teal-600 dark:text-teal-400 font-semibold"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              <Users className="w-4 h-4" />
-              <span>Manage Users</span>
-            </button>
           </nav>
         </div>
 
@@ -202,89 +128,7 @@ export default function Dashboard() {
 
         <main className="p-3 sm:p-4 md:p-6 flex-1 overflow-y-auto">
           {activeTab === "orders" && <RecentOrders />}
-
-          {activeTab === "products" && (
-            <MangeProducts/>
-          )}
-
-          {activeTab === "users" && (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-xl font-bold tracking-tight">Manage Users</h2>
-                <p className="text-xs text-muted-foreground">View registered users, grant admin roles, or remove accounts</p>
-              </div>
-
-              <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm border-collapse">
-                    <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-semibold border-b border-border">
-                      <tr>
-                        <th className="py-3.5 px-6">User</th>
-                        <th className="py-3.5 px-6">Role</th>
-                        <th className="py-3.5 px-6">Joined Date</th>
-                        <th className="py-3.5 px-6">Total Orders</th>
-                        <th className="py-3.5 px-6">Total Spent</th>
-                        <th className="py-3.5 px-6 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {users.map((user) => (
-                        <tr key={user.id} className="hover:bg-muted/40 transition-colors">
-                          <td className="py-4 px-6 whitespace-nowrap">
-                            <div className="flex items-center gap-3">
-                              <Avatar className="w-8 h-8">
-                                <AvatarFallback className="bg-teal-500/10 text-teal-600 text-xs font-bold">
-                                  {user.name.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <div className="font-medium text-foreground">{user.name}</div>
-                                <div className="text-xs text-muted-foreground">{user.email}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-4 px-6 whitespace-nowrap">
-                            <Badge
-                              variant="outline"
-                              className={
-                                user.role === "Admin"
-                                  ? "bg-purple-500/10 text-purple-600 border-purple-500/20"
-                                  : "bg-muted text-muted-foreground border-border"
-                              }
-                            >
-                              {user.role}
-                            </Badge>
-                          </td>
-                          <td className="py-4 px-6 text-xs text-muted-foreground whitespace-nowrap">{user.joinedDate}</td>
-                          <td className="py-4 px-6 font-semibold whitespace-nowrap">{user.totalOrders}</td>
-                          <td className="py-4 px-6 font-bold text-foreground whitespace-nowrap">${user.totalSpent.toFixed(2)}</td>
-                          <td className="py-4 px-6 text-right space-x-2 whitespace-nowrap">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleToggleAdmin(user.id)}
-                              className="text-xs h-8 gap-1.5"
-                            >
-                              <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
-                              {user.role === "Admin" ? "Remove Admin" : "Make Admin"}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDeleteUser(user.id)}
-                              className="h-8 w-8 text-rose-500 hover:text-rose-600"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
+          {activeTab === "products" && <MangeProducts/>}
         </main>
       </div>
     </div>

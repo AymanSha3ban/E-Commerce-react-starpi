@@ -9,3 +9,11 @@ export interface IProduct {
     url: string;
   };
 }
+
+export interface IUploadedMedia {
+  id: number;
+  documentId: string;
+  name: string;
+  url: string;
+  mime: string;
+}
