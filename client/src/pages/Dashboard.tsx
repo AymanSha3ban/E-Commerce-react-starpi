@@ -1,7 +1,6 @@
 import { useState } from "react"
 import {
   ShoppingBag,
-  Users,
   Package,
   Search,
   Bell,

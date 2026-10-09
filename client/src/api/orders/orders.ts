@@ -9,7 +9,7 @@ export async function addOrder(order:IOrder) {
   return response.data.data;
 }
 export async function getOrder() {
-  const response = await PrivateAPI.get("/api/orders");
+  const response = await PublicAPI.get("/api/orders");
   return response.data.data;
 }
 export async function getOrderById(id: string) {

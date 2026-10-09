@@ -1,7 +1,6 @@
 import Home from "../pages/Home";
 import App from "../App";
 import { createBrowserRouter } from "react-router-dom";
-import Team from "@/pages/About";
 import Products from "@/pages/Products";
 import ProductDetails from "@/components/ProductDetails";
 import Dashboard from "@/pages/Dashboard";
@@ -12,6 +11,7 @@ import Register from "@/pages/Register";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminRoute from "@/components/AdminRoute";
 import OrderDetails from "@/pages/OrderDetails";
+import About from "@/pages/About";
 
 export const router = createBrowserRouter([
   {
@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: "/about", element: <Team /> },
+      { path: "/about", element: <About /> },
       { path: "/products", element: <Products /> },
       { path: "/products/:id", element: <ProductDetails /> },
 
